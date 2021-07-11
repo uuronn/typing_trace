@@ -5,22 +5,63 @@
         <h1>Typing Game</h1>
         <div class="marker"></div>
       </div>
-      <button class="startButton mb-20">START</button>
-      <div class="question mb-20">apple</div>
-      <div class="clear">CLEAR!</div>
-      <div class="typeFormWrapper mb-20">
-        <input type="text" class="typeForm">
-      </div>
+      <button v-if="startFlg!=true" class="startButton mb-20" @click="gameStart">START</button>
+      <div v-if="startFlg">
+        <div class="question mb-20">{{ current_question }}</div>
+        <div v-if="current_question_counts == question_counts" class="clear">CLEAR!</div>
+        <div class="typeFormWrapper mb-20">
+          <input v-model="typeBox" type="text" class="typeForm">
+        </div>
 
-      <div class="gaugeWrapper">
-        <div class="gauge"></div>
+        <div class="gaugeWrapper mb-20">
+          <div v-bind:style="styleObject" class="gauge"></div>
+        </div>
+        <div>{{ current_question_counts }}/{{ question_counts }}</div>
       </div>
-      <div>1/5</div>
     </div>
   </div>
 </template>
 
 <script>
+  export default {
+    name: "main",
+    data() {
+      return {
+        startFlg: "",
+        current_question: "",
+        questions: [
+          'apple',
+          'banana',
+          'chocolate',
+          'donut',
+          'espresso'
+        ],
+        typeBox: "",
+        current_question_counts: 0,
+        question_counts: 0
+      }
+    },
+    // computed
+    methods: {
+      gameStart() {
+        this.startFlg = true
+      }
+    },
+    mounted() {
+      this.current_question = this.questions[0]
+      this.question_counts = this.questions.length
+    },
+    watch: {
+      typeBox(e) {
+        if (e == this.current_question) {
+          this.questions.splice(0,1)
+          this.current_question = this.questions[0]
+          this.typeBox = ""
+          this.current_question_counts = this.current_question_counts + 1
+        }
+      }
+    }
+  }
 
 </script>
 
